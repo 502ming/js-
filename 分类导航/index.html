@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/index.css" />
+</head>
+
+<body>
+  <div class="container">
+    <ul class="top">
+      <!-- <li>
+        <a href="javascript:;">首页</a>
+        <ul class="sub">
+          <li>
+            <a href="javascript:;">
+              <span>砂锅厨具</span>
+              <img src="https://yanxuan.nosdn.127.net/3102b963e7a3c74b9d2ae90e4380da65.png?quality=95&imageView" alt="">
+            </a>
+          </li>
+        </ul>
+      </li> -->
+    </ul>
+  </div>
+  <!-- 导入自己封装的axios函数 -->
+<script src="./nnn.js"></script>
+  <script>
+    // 在线接口文档： https://www.showdoc.com.cn/1834761734600444/8477922262544492
+
+    let box = document.querySelector('.top')
+    myAxios({
+      method: 'get',
+      url:'http://ajax-api.itheima.net/api/category/top'
+    }).then((res)=>{
+      console.log(res)
+    let arr=  res.data.map(item=>{
+        console.log(item.id)
+       return  myAxios({
+          url:'http://ajax-api.itheima.net/api/category/sub',
+       params:{
+          id:item.id
+       }
+        })
+      }) 
+      console.log(arr)
+      return Promise.all(arr)
+    }).then((res)=>{
+        console.log(res)
+        box.innerHTML=res.map((item)=>{
+          let subStr=item.data.children.map((sub)=>{
+                return` <li>
+            <a href="javascript:;">
+              <span>${sub.name}</span>
+              <img src="${sub.picture}"">
+            </a>
+          </li>
+          `
+          }).join('')
+      console.log(subStr);
+
+           return `<li>
+        <a href="javascript:;">${item.data.name}</a>
+        <ul class="sub">
+          ${subStr}
+        </ul>
+      </li>`
+        }).join('')
+        
+        
+      })
+
+
+    // 请求根路径为 http://ajax-api.itheima.net
+
+  </script>
+</body>
+
+</html> 
